@@ -3,8 +3,19 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ArticleCard from "../components/ArticleCard";
 import { API_URL } from "../config";
-import { isLoggedIn } from "../utils/auth";
 import "./Home.css";
+
+const TRENDING = [
+  {
+    title: "The MERN stack explained for beginners",
+    url: "https://medium.com",
+  },
+  { title: "React hooks you'll actually use", url: "https://medium.com" },
+  {
+    title: "Why NoSQL databases are everywhere now",
+    url: "https://medium.com",
+  },
+];
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -37,16 +48,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {!isLoggedIn() && (
-        <header className="home-masthead">
-          <h1 className="masthead-title">
-            A quiet place to read, write, and think out loud.
-          </h1>
-          <p className="masthead-sub">
-            Stories from writers on any topic that matters.
-          </p>
-        </header>
-      )}
       <div className="feed">
         <InfiniteScroll
           dataLength={articles.length}
@@ -66,6 +67,30 @@ const Home = () => {
           )}
         </InfiniteScroll>
       </div>
+
+      <aside className="sidebar">
+        <h3 className="sidebar-title">Trending on Familiar</h3>
+        <div className="trending-list">
+          {TRENDING.map((item, i) => (
+            <a
+              key={i}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="trending-item"
+            >
+              <span className="trending-rank">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="trending-text">{item.title}</span>
+            </a>
+          ))}
+        </div>
+        <p className="trending-note">
+          Handpicked from around the web while Familiar grows. This section will
+          fill with real stories as more people write and react.
+        </p>
+      </aside>
     </div>
   );
 };
