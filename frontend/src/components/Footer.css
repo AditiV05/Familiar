@@ -1,13 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400&display=swap");
 
 .site-footer {
+  border-top: 0.5px solid #ededed;
+  margin-top: 64px;
+}
+
+.footer-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 680px;
   margin: 0 auto;
-  padding: 28px 24px 40px;
-  border-top: 0.5px solid #ededed;
+  padding: 24px 24px 36px;
 }
 
 .footer-mark {
