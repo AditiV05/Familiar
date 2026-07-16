@@ -1,9 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap");
 
 .home-container {
-  display: flex;
-  gap: 2.5rem;
-  max-width: 1000px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 2.5rem 24px 4rem;
   font-family: "Inter", sans-serif;
@@ -11,7 +9,6 @@
 }
 
 .feed {
-  flex: 1.9;
   min-width: 0;
 }
 
@@ -20,72 +17,4 @@
   color: #999;
   font-size: 14px;
   margin: 2rem 0;
-}
-
-.sidebar {
-  flex: 1;
-  min-width: 0;
-  border-left: 0.5px solid #ededed;
-  padding-left: 2rem;
-  align-self: flex-start;
-  position: sticky;
-  top: 2.5rem;
-}
-
-.sidebar-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: #242424;
-  margin: 0 0 18px;
-}
-
-.trending-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.trending-item {
-  display: flex;
-  gap: 12px;
-  text-decoration: none;
-  color: #242424;
-}
-
-.trending-rank {
-  font-family: "Fraunces", serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: #cfcfcf;
-  line-height: 1.1;
-}
-
-.trending-text {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.trending-item:hover .trending-text {
-  text-decoration: underline;
-}
-
-.trending-note {
-  margin-top: 22px;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #999;
-}
-
-@media (max-width: 768px) {
-  .home-container {
-    flex-direction: column;
-  }
-  .sidebar {
-    border-left: none;
-    border-top: 0.5px solid #ededed;
-    padding-left: 0;
-    padding-top: 1.5rem;
-    position: static;
-  }
 }
