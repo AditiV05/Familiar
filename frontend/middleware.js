@@ -168,6 +168,10 @@ export default async function middleware(request) {
 
     const meta = await res.json();
 
+    // No image in the article body, so render a typographic card for this
+    // specific article instead of the one shared static image.
+    const generatedCard = `${SITE_URL}/api/og?id=${id}`;
+
     return new Response(
       buildHtml({
         title: meta.title || "Familiar",
@@ -175,7 +179,7 @@ export default async function middleware(request) {
           meta.description ||
           "A quiet place to read, write, and think out loud.",
         authorName: meta.authorName || "",
-        image: meta.coverImage || FALLBACK_IMAGE,
+        image: meta.coverImage || generatedCard,
         url: canonical,
         isCover: Boolean(meta.coverImage),
       }),
