@@ -67,6 +67,8 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
   const safeAuthor = escapeHtml(authorName);
   const safeImage = escapeHtml(image);
   const safeUrl = escapeHtml(url);
+  // Author beside the title, the way a byline reads.
+  const headline = safeAuthor ? `${safeTitle} | ${safeAuthor}` : safeTitle;
 
   // Only declare dimensions for the fallback card, where we know them.
   // Claiming 1200x630 for an arbitrary embedded photo makes platforms
@@ -88,7 +90,7 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>${safeTitle}</title>
+    <title>${headline}</title>
     <link rel="canonical" href="${safeUrl}" />
 
     <meta name="description" content="${safeDescription}" />
@@ -97,7 +99,7 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
     <meta property="og:site_name" content="Familiar" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${safeUrl}" />
-    <meta property="og:title" content="${safeTitle}" />
+    <meta property="og:title" content="${headline}" />
     <meta property="og:image" content="${safeImage}" />
     <meta property="og:image:alt" content="${safeTitle}" />${dimensionTags}
     ${authorTag}
@@ -105,7 +107,7 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${safeTitle}" />
     <meta name="twitter:image" content="${safeImage}" />
-    <meta name="twitter:image:alt" content="${safeTitle}" />
+    <meta name="twitter:title" content="${headline}" />
   </head>
   <body>
     <h1>${safeTitle}</h1>
