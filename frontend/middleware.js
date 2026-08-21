@@ -7,7 +7,7 @@ export const config = {
 };
 
 const SITE_URL = "https://familiar-blog.vercel.app";
-const API_URL = "https://s58-aditi-capstone-blog.onrender.com";
+const API_URL = "https://s58-aditi-capstone-blog.onrender.com/api";
 const FALLBACK_IMAGE = `${SITE_URL}/og-image.png`;
 
 // Bots that fetch a URL purely to build a link preview or index it.
