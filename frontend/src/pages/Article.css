@@ -212,6 +212,25 @@
   margin-left: auto;
 }
 
+.engage-share .engage-label {
+  font-size: 14px;
+}
+
+/* Confirmation state after a desktop copy. Beats a toast: it appears
+   exactly where the user just clicked. */
+.engage-share.share-copied,
+.engage-share.share-copied .engage-icon {
+  color: #5c1a2b;
+}
+
+/* On the narrowest phones the bar has four items and three counts,
+   so the icon carries the meaning on its own. */
+@media (max-width: 380px) {
+  .engage-share .engage-label {
+    display: none;
+  }
+}
+
 /* Responses */
 .responses-section {
   margin-top: 8px;

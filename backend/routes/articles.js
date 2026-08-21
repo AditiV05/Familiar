@@ -1,8 +1,43 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const Article = require("../models/Article");
 const authenticateToken = require("../middleware/authMiddleware");
 const createNotification = require("../utils/createNotification");
+
+// Pull the first <img src> out of the article body.
+// Mirrors getFirstImage(html) in frontend/src/components/ArticleCard.jsx
+// so the feed card and the link preview always show the same image.
+const getFirstImage = (html) => {
+  if (!html) return null;
+  const match = html.match(/<img[^>]+src\s*=\s*["']([^"']+)["']/i);
+  if (!match) return null;
+  const src = match[1].trim();
+  // Crawlers need an absolute URL. Skip relative paths and data URIs.
+  if (!/^https?:\/\//i.test(src)) return null;
+  return src;
+};
+
+// Turn article HTML into a short plain-text summary for the OG description
+// when the article has no subtitle of its own.
+const summarise = (html, maxLength = 160) => {
+  if (!html) return "";
+  const text = html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (text.length <= maxLength) return text;
+  const cut = text.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 60 ? cut.slice(0, lastSpace) : cut).trim() + "...";
+};
 
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -43,6 +78,39 @@ router.get("/:id", async (req, res) => {
       .populate("comments.user", "name");
     if (!article) return res.status(404).json({ message: "Article not found" });
     res.json(article);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Lightweight metadata for Open Graph link previews.
+// Used by the Vercel Edge Middleware, which serves crawlers a small HTML page
+// carrying real per-article <meta> tags. Deliberately excludes comments,
+// likes and bookmarks so the middleware stays fast.
+router.get("/:id/meta", async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    const article = await Article.findById(req.params.id)
+      .select("title description content author date")
+      .populate("author", "name")
+      .lean();
+
+    if (!article) return res.status(404).json({ message: "Article not found" });
+
+    // Public, unchanging data. Let the edge cache absorb repeat crawler hits
+    // instead of waking the Render instance every time.
+    res.set("Cache-Control", "public, max-age=300, s-maxage=300");
+
+    res.json({
+      title: article.title || "Familiar",
+      description: article.description || summarise(article.content),
+      authorName: article.author?.name || "",
+      coverImage: getFirstImage(article.content),
+      date: article.date || null,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -61,6 +61,36 @@ const BookmarkIcon = () => (
   </svg>
 );
 
+const ShareIcon = () => (
+  <svg
+    width="19"
+    height="19"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 15V3" />
+    <path d="m8 6.5 4-4 4 4" />
+    <path d="M20 14v5.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5V14" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg
+    width="19"
+    height="19"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M20 6.5 9.5 17 4 11.5" />
+  </svg>
+);
+
 const Article = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -70,6 +100,7 @@ const Article = () => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -87,8 +118,53 @@ const Article = () => {
   };
 
   useEffect(() => {
+    setCopied(false);
     fetchArticle();
   }, [id]);
+
+  // Revert the "Copied" label, and clear the timer if the user leaves first.
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/article/${id}`;
+
+    // Phones and some desktop browsers: open the real OS share sheet.
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: article.title,
+          text: article.description || article.title,
+          url: shareUrl,
+        });
+        return;
+      } catch (err) {
+        // Dismissing the sheet is a choice, not a failure. Anything else
+        // drops through to copy so the button is never a dead end.
+        if (err.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      // Older or restricted browsers with no clipboard API.
+      const temp = document.createElement("textarea");
+      temp.value = shareUrl;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.opacity = "0";
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+    }
+
+    setCopied(true);
+  };
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -274,6 +350,16 @@ const Article = () => {
             <BookmarkIcon />
           </span>
           {article.bookmarks.length}
+        </button>
+        <button
+          className={`engage-btn engage-share ${copied ? "share-copied" : ""}`}
+          onClick={handleShare}
+          aria-label="Share this article"
+        >
+          <span className="engage-icon">
+            {copied ? <CheckIcon /> : <ShareIcon />}
+          </span>
+          <span className="engage-label">{copied ? "Copied" : "Share"}</span>
         </button>
       </div>
 
