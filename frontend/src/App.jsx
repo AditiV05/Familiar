@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
 } from "react-router-dom";
+import { API_URL } from "./config";
 import Home from "./pages/Home";
 import Article from "./pages/Article";
 import Profile from "./pages/Profile";
@@ -72,6 +74,13 @@ function Layout() {
 }
 
 function App() {
+  // Render's free tier sleeps after inactivity and takes around 40 seconds to
+  // wake. Nudge it the moment the app loads, so it is already up by the time
+  // someone signs in or opens an article. Failure here is harmless.
+  useEffect(() => {
+    fetch(`${API_URL}/health`).catch(() => {});
+  }, []);
+
   return (
     <Router>
       <Layout />

@@ -12,6 +12,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
+// Cheap liveness probe. Touches no database, so it answers the moment the
+// instance is awake. The frontend pings it on load to wake Render's free
+// tier before anyone clicks something that navigates off the site.
+app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // Routes
 const authRoutes = require("./routes/auth");
