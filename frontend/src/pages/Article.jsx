@@ -137,7 +137,6 @@ const Article = () => {
       try {
         await navigator.share({
           title: article.title,
-          text: article.description || article.title,
           url: shareUrl,
         });
         return;

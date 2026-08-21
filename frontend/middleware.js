@@ -68,10 +68,6 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
   const safeImage = escapeHtml(image);
   const safeUrl = escapeHtml(url);
 
-  // Full title shown in the preview headline, with the author as the
-  // secondary line most platforms render underneath.
-  const headline = safeAuthor ? `${safeTitle} | ${safeAuthor}` : safeTitle;
-
   // Only declare dimensions for the fallback card, where we know them.
   // Claiming 1200x630 for an arbitrary embedded photo makes platforms
   // render a stretched or cropped card.
@@ -85,11 +81,14 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
     ? `<meta property="article:author" content="${safeAuthor}" />`
     : "";
 
+  // No og:description or twitter:description on purpose. The preview image
+  // already carries the title and author, so a description underneath it is
+  // the same words twice. The plain name="description" tag stays for search.
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>${headline}</title>
+    <title>${safeTitle}</title>
     <link rel="canonical" href="${safeUrl}" />
 
     <meta name="description" content="${safeDescription}" />
@@ -98,15 +97,13 @@ const buildHtml = ({ title, description, authorName, image, url, isCover }) => {
     <meta property="og:site_name" content="Familiar" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${safeUrl}" />
-    <meta property="og:title" content="${headline}" />
-    <meta property="og:description" content="${safeDescription}" />
+    <meta property="og:title" content="${safeTitle}" />
     <meta property="og:image" content="${safeImage}" />
     <meta property="og:image:alt" content="${safeTitle}" />${dimensionTags}
     ${authorTag}
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${headline}" />
-    <meta name="twitter:description" content="${safeDescription}" />
+    <meta name="twitter:title" content="${safeTitle}" />
     <meta name="twitter:image" content="${safeImage}" />
     <meta name="twitter:image:alt" content="${safeTitle}" />
   </head>
