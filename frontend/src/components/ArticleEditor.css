@@ -2,19 +2,74 @@
   position: relative;
 }
 
-.editor-upload-note,
 .editor-upload-error {
   font-family: "Inter", sans-serif;
   font-size: 13px;
   margin: 10px 0 0;
-}
-
-.editor-upload-note {
-  color: #5c1a2b;
-}
-
-.editor-upload-error {
   color: #b42318;
+}
+
+/* Pinned to the viewport, not the page. The editor is taller than a phone
+   screen, so anything placed under it is invisible without scrolling. */
+.editor-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #5c1a2b;
+  color: #f5f0e6;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  box-shadow: 0 6px 24px rgba(92, 26, 43, 0.28);
+  animation: editor-toast-in 0.22s ease-out;
+}
+
+.editor-toast-error {
+  background: #b42318;
+  box-shadow: 0 6px 24px rgba(180, 35, 24, 0.3);
+}
+
+.editor-toast-spinner {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(245, 240, 230, 0.35);
+  border-top-color: #f5f0e6;
+  animation: editor-spin 0.7s linear infinite;
+}
+
+@keyframes editor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes editor-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-toast {
+    animation: none;
+  }
+  .editor-toast-spinner {
+    animation-duration: 2.5s;
+  }
 }
 
 /* Images sit in the flow of the article, not stretched past it */

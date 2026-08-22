@@ -97,6 +97,14 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
     setSelected(null);
   }, [selected]);
 
+  // Errors clear themselves. A pill fixed to the screen that never leaves is
+  // worse than no pill at all.
+  useEffect(() => {
+    if (!uploadError) return;
+    const timer = setTimeout(() => setUploadError(""), 4000);
+    return () => clearTimeout(timer);
+  }, [uploadError]);
+
   useEffect(() => {
     const editor = quillRef.current?.getEditor();
     if (!editor) return;
@@ -233,8 +241,17 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
         </>
       )}
 
-      {uploading && <p className="editor-upload-note">Uploading image...</p>}
-      {uploadError && <p className="editor-upload-error">{uploadError}</p>}
+      {(uploading || uploadError) && (
+        <div
+          className={`editor-toast ${uploadError ? "editor-toast-error" : ""}`}
+          role="status"
+          aria-live="polite"
+        >
+          {!uploadError && <span className="editor-toast-spinner" />}
+          <span>{uploadError || "Uploading image"}</span>
+        </div>
+      )}
+
       {!CLOUD_NAME && (
         <p className="editor-upload-error">
           Image uploads are not configured. Add your Cloudinary variables.
