@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./ArticleEditor.css";
 
@@ -38,8 +38,11 @@ const uploadToCloudinary = async (file) => {
 
 const ArticleEditor = ({ value, onChange, placeholder }) => {
   const quillRef = useRef(null);
+  const containerRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  // The image the author has clicked on, plus where to draw its outline.
+  const [selected, setSelected] = useState(null);
 
   const insertImage = useCallback(async (file) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -80,8 +83,20 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
     input.click();
   }, [insertImage]);
 
-  // Drag and drop, and paste straight from the clipboard. Both would
-  // otherwise fall through to Quill's base64 path.
+  // Backspace already deletes an image, but nothing tells the author that.
+  // Clicking one selects it and offers a button instead.
+  const removeSelected = useCallback(() => {
+    const editor = quillRef.current?.getEditor();
+    if (!editor || !selected?.node) return;
+
+    const blot = Quill.find(selected.node);
+    if (blot) {
+      const index = editor.getIndex(blot);
+      editor.deleteText(index, 1, "user");
+    }
+    setSelected(null);
+  }, [selected]);
+
   useEffect(() => {
     const editor = quillRef.current?.getEditor();
     if (!editor) return;
@@ -108,11 +123,39 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
       files.forEach(insertImage);
     };
 
+    // Measured against the container, not the page, so the outline stays put.
+    const handleClick = (e) => {
+      if (e.target && e.target.tagName === "IMG" && containerRef.current) {
+        const img = e.target.getBoundingClientRect();
+        const box = containerRef.current.getBoundingClientRect();
+        setSelected({
+          node: e.target,
+          top: img.top - box.top,
+          left: img.left - box.left,
+          width: img.width,
+          height: img.height,
+        });
+      } else {
+        setSelected(null);
+      }
+    };
+
+    const clear = () => setSelected(null);
+
     root.addEventListener("drop", handleDrop, true);
     root.addEventListener("paste", handlePaste, true);
+    root.addEventListener("click", handleClick);
+    root.addEventListener("keydown", clear);
+    window.addEventListener("scroll", clear, true);
+    window.addEventListener("resize", clear);
+
     return () => {
       root.removeEventListener("drop", handleDrop, true);
       root.removeEventListener("paste", handlePaste, true);
+      root.removeEventListener("click", handleClick);
+      root.removeEventListener("keydown", clear);
+      window.removeEventListener("scroll", clear, true);
+      window.removeEventListener("resize", clear);
     };
   }, [insertImage]);
 
@@ -138,7 +181,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
   );
 
   return (
-    <div className="article-editor">
+    <div className="article-editor" ref={containerRef}>
       <ReactQuill
         ref={quillRef}
         value={value}
@@ -147,6 +190,31 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
         modules={modules}
         className="writer-editor"
       />
+
+      {selected && (
+        <>
+          <div
+            className="image-outline"
+            style={{
+              top: selected.top,
+              left: selected.left,
+              width: selected.width,
+              height: selected.height,
+            }}
+          />
+          <button
+            type="button"
+            className="image-remove-btn"
+            style={{
+              top: selected.top + 10,
+              left: selected.left + selected.width - 10,
+            }}
+            onClick={removeSelected}
+          >
+            Remove image
+          </button>
+        </>
+      )}
 
       {uploading && <p className="editor-upload-note">Uploading image...</p>}
       {uploadError && <p className="editor-upload-error">{uploadError}</p>}
