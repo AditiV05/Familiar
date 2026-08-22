@@ -200,6 +200,15 @@ const Article = () => {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     try {
+      if (deleteTarget.type === "article") {
+        await axios.delete(`${API_URL}/articles/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setDeleteTarget(null);
+        navigate("/");
+        return;
+      }
+
       if (deleteTarget.type === "comment") {
         await axios.delete(
           `${API_URL}/articles/${id}/comment/${deleteTarget.commentId}`,
@@ -219,16 +228,16 @@ const Article = () => {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`${API_URL}/articles/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      navigate("/");
-    } catch (err) {
-      console.error("Failed to delete article", err);
-    }
-  };
+  // const handleDelete = async () => {
+  //   try {
+  //     await axios.delete(`${API_URL}/articles/${id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     navigate("/");
+  //   } catch (err) {
+  //     console.error("Failed to delete article", err);
+  //   }
+  // };
 
   const handleLike = async () => {
     const alreadyLiked = article.likes.includes(userId);
@@ -317,7 +326,10 @@ const Article = () => {
       {isOwner && (
         <div className="article-owner-actions">
           <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
-          <button onClick={handleDelete} className="delete-btn">
+          <button
+            onClick={() => setDeleteTarget({ type: "article" })}
+            className="delete-btn"
+          >
             Delete
           </button>
         </div>
@@ -536,7 +548,11 @@ const Article = () => {
         <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <h4 className="modal-title">Delete this {deleteTarget.type}?</h4>
-            <p className="modal-text">This can&apos;t be undone.</p>
+            <p className="modal-text">
+              {deleteTarget.type === "article"
+                ? "Your article and every response on it will be gone for good."
+                : "This can't be undone."}
+            </p>
             <div className="modal-actions">
               <button
                 className="modal-cancel"

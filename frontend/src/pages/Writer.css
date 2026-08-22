@@ -108,3 +108,8 @@
   margin-bottom: 16px;
   font-size: 14px;
 }
+
+.writer-submit-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}

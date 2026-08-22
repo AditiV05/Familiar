@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,11 @@ const Write = () => {
   });
 
   const [error, setError] = useState("");
+  const [publishing, setPublishing] = useState(false);
+  // A fast double tap can fire again before React re-renders the disabled
+  // button. The ref blocks it synchronously; the state is only for the label.
+  const inFlight = useRef(false);
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -31,6 +36,11 @@ const Write = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (inFlight.current) return;
+
+    inFlight.current = true;
+    setPublishing(true);
+    setError("");
 
     try {
       const payload = {
@@ -43,9 +53,13 @@ const Write = () => {
       });
 
       const newArticleId = response.data._id;
+      // Deliberately not resetting on success: we are navigating away, and
+      // re-enabling would flash the button back to "Publish" on the way out.
       navigate(`/article/${newArticleId}`);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to post article");
+      inFlight.current = false;
+      setPublishing(false);
     }
   };
 
@@ -54,8 +68,12 @@ const Write = () => {
       <form onSubmit={handleSubmit} className="writer-form">
         <div className="writer-topbar">
           <span className="writer-label">Draft</span>
-          <button type="submit" className="writer-submit-btn">
-            Publish
+          <button
+            type="submit"
+            className="writer-submit-btn"
+            disabled={publishing}
+          >
+            {publishing ? "Publishing..." : "Publish"}
           </button>
         </div>
 

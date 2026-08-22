@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config";
@@ -14,6 +14,9 @@ const EditArticle = () => {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const inFlight = useRef(false);
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -34,6 +37,12 @@ const EditArticle = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (inFlight.current) return;
+
+    inFlight.current = true;
+    setSaving(true);
+    setError("");
+
     try {
       const payload = {
         ...article,
@@ -49,6 +58,8 @@ const EditArticle = () => {
     } catch (err) {
       console.error("Failed to update article", err);
       setError("Failed to update article");
+      inFlight.current = false;
+      setSaving(false);
     }
   };
 
@@ -59,8 +70,8 @@ const EditArticle = () => {
       <form onSubmit={handleSubmit} className="edit-form">
         <div className="edit-topbar">
           <span className="edit-label">Editing</span>
-          <button type="submit" className="edit-submit">
-            Save changes
+          <button type="submit" className="edit-submit" disabled={saving}>
+            {saving ? "Saving..." : "Save changes"}
           </button>
         </div>
 

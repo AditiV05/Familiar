@@ -65,3 +65,9 @@
 .image-remove-btn:hover {
   background: #4a1522;
 }
+
+.article-editor .ql-editor img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

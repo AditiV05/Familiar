@@ -41,7 +41,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
   const containerRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  // The image the author has clicked on, plus where to draw its outline.
+  // The image the author has tapped, plus where to draw its outline.
   const [selected, setSelected] = useState(null);
 
   const insertImage = useCallback(async (file) => {
@@ -84,7 +84,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
   }, [insertImage]);
 
   // Backspace already deletes an image, but nothing tells the author that.
-  // Clicking one selects it and offers a button instead.
+  // Tapping one selects it and offers a button instead.
   const removeSelected = useCallback(() => {
     const editor = quillRef.current?.getEditor();
     if (!editor || !selected?.node) return;
@@ -123,9 +123,22 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
       files.forEach(insertImage);
     };
 
+    // Tapping an image would otherwise focus the contenteditable, which on a
+    // phone throws up the keyboard and shoves the whole layout around.
+    // Cancelling the default on mousedown stops the focus. Scrolling is
+    // already decided by then, so this does not block scroll gestures.
+    const handleMouseDown = (e) => {
+      if (e.target && e.target.tagName === "IMG") {
+        e.preventDefault();
+      }
+    };
+
     // Measured against the container, not the page, so the outline stays put.
     const handleClick = (e) => {
       if (e.target && e.target.tagName === "IMG" && containerRef.current) {
+        // If the author was already typing, the keyboard is up. Drop focus.
+        if (document.activeElement === root) root.blur();
+
         const img = e.target.getBoundingClientRect();
         const box = containerRef.current.getBoundingClientRect();
         setSelected({
@@ -144,6 +157,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
 
     root.addEventListener("drop", handleDrop, true);
     root.addEventListener("paste", handlePaste, true);
+    root.addEventListener("mousedown", handleMouseDown);
     root.addEventListener("click", handleClick);
     root.addEventListener("keydown", clear);
     window.addEventListener("scroll", clear, true);
@@ -152,6 +166,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
     return () => {
       root.removeEventListener("drop", handleDrop, true);
       root.removeEventListener("paste", handlePaste, true);
+      root.removeEventListener("mousedown", handleMouseDown);
       root.removeEventListener("click", handleClick);
       root.removeEventListener("keydown", clear);
       window.removeEventListener("scroll", clear, true);
@@ -209,6 +224,8 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
               top: selected.top + 10,
               left: selected.left + selected.width - 10,
             }}
+            // Keeps the tap from handing focus back to the editor.
+            onMouseDown={(e) => e.preventDefault()}
             onClick={removeSelected}
           >
             Remove image
