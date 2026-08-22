@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ArticleEditor from "../components/ArticleEditor";
 import "./EditArticle.css";
 
 const cleanContent = (html) => {
@@ -86,11 +85,10 @@ const EditArticle = () => {
           className="edit-input description"
         />
 
-        <ReactQuill
+        <ArticleEditor
           value={article.content}
           onChange={handleContentChange}
           placeholder="Tell your story..."
-          className="edit-editor"
         />
       </form>
     </div>

@@ -1,0 +1,36 @@
+.article-editor {
+  position: relative;
+}
+
+.editor-upload-note,
+.editor-upload-error {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+.editor-upload-note {
+  color: #5c1a2b;
+}
+
+.editor-upload-error {
+  color: #b42318;
+}
+
+/* Images sit in the flow of the article, not stretched past it */
+.article-editor .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.article-editor .ql-toolbar.ql-snow .ql-formats button:hover .ql-stroke,
+.article-editor .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+  stroke: #5c1a2b;
+}
+
+.article-editor .ql-toolbar.ql-snow .ql-formats button:hover .ql-fill,
+.article-editor .ql-toolbar.ql-snow button.ql-active .ql-fill {
+  fill: #5c1a2b;
+}
