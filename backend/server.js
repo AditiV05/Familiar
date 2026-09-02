@@ -17,6 +17,8 @@ app.use(passport.initialize());
 // tier before anyone clicks something that navigates off the site.
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
+app.get("/api/health", (req, res) => res.json({ ok: true }));
+
 // Routes
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
