@@ -72,6 +72,16 @@
   }
 }
 
+/* Quill zeroes paragraph margins. Match the published article so what the
+   author sees here is how it reads once published. */
+.article-editor .ql-editor p {
+  margin: 0 0 1em;
+}
+
+.article-editor .ql-editor p:last-child {
+  margin-bottom: 0;
+}
+
 /* Images sit in the flow of the article, not stretched past it */
 .article-editor .ql-editor img {
   max-width: 100%;
