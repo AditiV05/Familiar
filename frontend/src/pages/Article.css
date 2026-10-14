@@ -106,6 +106,42 @@
   margin: 1rem 0;
 }
 
+/* Quotes. Keep in step with the editor in components/ArticleEditor.css. */
+.article-content blockquote {
+  margin: 0 0 1em;
+  padding: 0 0 0 1.25em;
+  border-left: 3px solid #242424;
+  font-size: 1em;
+  font-style: normal;
+  color: #242424;
+}
+
+/* Quill writes each line of a quote as its own <blockquote>. Pull them
+   together so a multi-line quote keeps one unbroken border. */
+.article-content blockquote:not(.pull-quote) + blockquote:not(.pull-quote) {
+  margin-top: -1em;
+  padding-top: 1em;
+}
+
+/* Pull quote: one strong line, set apart */
+.article-content blockquote.pull-quote {
+  margin: 1.5em 0;
+  padding: 0 1em;
+  border-left: none;
+  font-size: 1.4em;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: center;
+  color: #6b6b6b;
+  /* Above optical size 20, Fraunces italic swaps in its curly "wonky"
+     letters. Hold it at 20 so the pull quote stays clean. */
+  font-variation-settings: "opsz" 20;
+}
+
+.article-content blockquote.pull-quote + blockquote.pull-quote {
+  margin-top: -1em;
+}
+
 .article-content a {
   color: #5c1a2b;
 }
