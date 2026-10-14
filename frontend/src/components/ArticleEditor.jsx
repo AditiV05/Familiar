@@ -3,6 +3,35 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./ArticleEditor.css";
 
+// Quill's quote only knows on or off. This one also remembers which style:
+// "block" is a plain <blockquote>, "pull" adds the pull-quote class. Old
+// articles have plain blockquotes, so they still load as block quotes.
+const BaseBlockquote = Quill.import("formats/blockquote");
+
+class Quote extends BaseBlockquote {
+  static create(value) {
+    const node = super.create(value);
+    if (value === "pull") node.classList.add("pull-quote");
+    return node;
+  }
+
+  static formats(node) {
+    return node.classList.contains("pull-quote") ? "pull" : "block";
+  }
+}
+
+Quill.register("formats/blockquote", Quote, true);
+
+// The quote button cycles: off, block quote, pull quote, off.
+function quoteHandler() {
+  let current = this.quill.getFormat().blockquote;
+  // A selection over mixed lines reports every value. Go by the first.
+  if (Array.isArray(current)) current = current[0];
+
+  const next = !current ? "block" : current === "pull" ? false : "pull";
+  this.quill.format("blockquote", next, "user");
+}
+
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -197,7 +226,7 @@ const ArticleEditor = ({ value, onChange, placeholder }) => {
           ["link", "image"],
           ["clean"],
         ],
-        handlers: { image: imageHandler },
+        handlers: { image: imageHandler, blockquote: quoteHandler },
       },
     }),
     [imageHandler],

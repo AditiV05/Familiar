@@ -72,6 +72,52 @@
   }
 }
 
+/* Quill zeroes paragraph margins. Match the published article so what the
+   author sees here is how it reads once published. */
+.article-editor .ql-editor p {
+  margin: 0 0 1em;
+}
+
+.article-editor .ql-editor p:last-child {
+  margin-bottom: 0;
+}
+
+/* Quotes. Keep in step with the published view in pages/Article.css. */
+.article-editor .ql-snow .ql-editor blockquote {
+  margin: 0 0 1em;
+  padding: 0 0 0 1.25em;
+  border-left: 3px solid #242424;
+  font-size: 1em;
+  font-style: normal;
+  color: #242424;
+}
+
+/* Quill writes each line of a quote as its own <blockquote>. Pull them
+   together so a multi-line quote keeps one unbroken border. */
+.article-editor .ql-snow .ql-editor blockquote:not(.pull-quote) + blockquote:not(.pull-quote) {
+  margin-top: -1em;
+  padding-top: 1em;
+}
+
+/* Pull quote: one strong line, set apart */
+.article-editor .ql-snow .ql-editor blockquote.pull-quote {
+  margin: 1.5em 0;
+  padding: 0 1em;
+  border-left: none;
+  font-size: 1.4em;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: center;
+  color: #6b6b6b;
+  /* Above optical size 20, Fraunces italic swaps in its curly "wonky"
+     letters. Hold it at 20 so the pull quote stays clean. */
+  font-variation-settings: "opsz" 20;
+}
+
+.article-editor .ql-snow .ql-editor blockquote.pull-quote + blockquote.pull-quote {
+  margin-top: -1em;
+}
+
 /* Images sit in the flow of the article, not stretched past it */
 .article-editor .ql-editor img {
   max-width: 100%;
