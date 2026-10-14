@@ -74,11 +74,15 @@
 
 /* Quill zeroes paragraph margins. Match the published article so what the
    author sees here is how it reads once published. */
-.article-editor .ql-editor p {
+.article-editor .ql-editor p,
+.article-editor .ql-editor ul,
+.article-editor .ql-editor ol {
   margin: 0 0 1em;
 }
 
-.article-editor .ql-editor p:last-child {
+.article-editor .ql-editor p:last-child,
+.article-editor .ql-editor ul:last-child,
+.article-editor .ql-editor ol:last-child {
   margin-bottom: 0;
 }
 
