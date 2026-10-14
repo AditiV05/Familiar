@@ -91,11 +91,15 @@
   padding: 32px 0 8px;
 }
 
-.article-content p {
+.article-content p,
+.article-content ul,
+.article-content ol {
   margin: 0 0 1em;
 }
 
-.article-content p:last-child {
+.article-content p:last-child,
+.article-content ul:last-child,
+.article-content ol:last-child {
   margin-bottom: 0;
 }
 
