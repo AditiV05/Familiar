@@ -30,6 +30,9 @@ app.use("/api/users", userRoutes);
 const searchRoutes = require("./routes/search");
 app.use("/api/search", searchRoutes);
 
+const draftRoutes = require("./routes/drafts");
+app.use("/api/drafts", draftRoutes);
+
 const notificationRoutes = require("./routes/notifications");
 app.use("/api/notifications", notificationRoutes);
 

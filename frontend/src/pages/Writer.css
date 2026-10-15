@@ -27,6 +27,17 @@
   color: #999;
 }
 
+.writer-label-error {
+  color: #b42318;
+}
+
+.writer-loading {
+  text-align: center;
+  margin-top: 80px;
+  color: #999;
+  font-family: "Inter", sans-serif;
+}
+
 .writer-submit-btn {
   background: #5c1a2b;
   color: #fff;

@@ -260,6 +260,9 @@ const Navbar = () => {
                 <Link to={`/profile/${userId}`} className="dropdown-item">
                   Profile
                 </Link>
+                <Link to="/drafts" className="dropdown-item">
+                  Drafts
+                </Link>
                 <Link to="/saved" className="dropdown-item">
                   Saved
                 </Link>
