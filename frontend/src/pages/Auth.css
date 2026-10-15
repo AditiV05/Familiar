@@ -269,6 +269,32 @@ body {
   height: 18px;
 }
 
+/* Shown under "Connecting..." while the backend wakes up. A quiet line of
+   text, not a box, so it reads as a status of the button above. */
+.auth-wake-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--auth-muted);
+  text-align: center;
+  animation: auth-wake-in 0.3s ease-out;
+}
+
+@keyframes auth-wake-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-wake-note {
+    animation: none;
+  }
+}
+
 .auth-foot {
   margin-top: 26px;
   font-size: 13.5px;
