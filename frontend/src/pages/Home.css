@@ -7,7 +7,7 @@
   margin: 0 auto;
   padding: 2.5rem 24px 4rem;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .feed {
@@ -17,7 +17,7 @@
 
 .feed-status {
   text-align: center;
-  color: #999;
+  color: var(--text-faint);
   font-size: 14px;
   margin: 2rem 0;
 }
@@ -25,7 +25,7 @@
 .sidebar {
   flex: 1;
   min-width: 0;
-  border-left: 0.5px solid #ededed;
+  border-left: 0.5px solid var(--border);
   padding-left: 2rem;
   align-self: flex-start;
   position: sticky;
@@ -35,7 +35,7 @@
 .sidebar-title {
   font-size: 14px;
   font-weight: 500;
-  color: #242424;
+  color: var(--text);
   margin: 0 0 18px;
 }
 
@@ -49,14 +49,14 @@
   display: flex;
   gap: 12px;
   text-decoration: none;
-  color: #242424;
+  color: var(--text);
 }
 
 .trending-rank {
   font-family: "Fraunces", serif;
   font-size: 20px;
   font-weight: 500;
-  color: #cfcfcf;
+  color: var(--placeholder);
   line-height: 1.1;
 }
 
@@ -74,7 +74,7 @@
   margin-top: 22px;
   font-size: 12px;
   line-height: 1.5;
-  color: #999;
+  color: var(--text-faint);
 }
 
 @media (max-width: 768px) {
@@ -83,7 +83,7 @@
   }
   .sidebar {
     border-left: none;
-    border-top: 0.5px solid #ededed;
+    border-top: 0.5px solid var(--border);
     padding-left: 0;
     padding-top: 1.5rem;
     position: static;

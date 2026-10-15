@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getInitial, getAvatarColor } from "../utils/avatarColor";
 import { useState, useEffect, useRef } from "react";
 import { isLoggedIn, logout } from "../utils/auth";
+import { getTheme, setTheme } from "../utils/theme";
 import axios from "axios";
 import { API_URL } from "../config";
 import "./Navbar.css";
@@ -106,6 +107,18 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const [dark, setDark] = useState(() => getTheme() === "dark");
+
+  // The device can switch the theme too (see utils/theme), so keep the
+  // switch in step rather than only flipping it on click.
+  useEffect(() => {
+    const sync = () => setDark(getTheme() === "dark");
+    window.addEventListener("themechange", sync);
+    return () => window.removeEventListener("themechange", sync);
+  }, []);
+
+  const toggleTheme = () => setTheme(dark ? "light" : "dark");
 
   const handleLogout = () => {
     logout();
@@ -266,6 +279,16 @@ const Navbar = () => {
                 <Link to="/saved" className="dropdown-item">
                   Saved
                 </Link>
+                <button
+                  type="button"
+                  className="dropdown-item theme-toggle"
+                  role="switch"
+                  aria-checked={dark}
+                  onClick={toggleTheme}
+                >
+                  Dark mode
+                  <span className={`theme-switch ${dark ? "on" : ""}`} />
+                </button>
                 <Link to="/settings" className="dropdown-item">
                   Settings
                 </Link>

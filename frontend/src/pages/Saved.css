@@ -5,7 +5,7 @@
   margin: 48px auto 96px;
   padding: 0 24px;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .saved-title {
@@ -18,14 +18,14 @@
 
 .saved-sub {
   font-size: 15px;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin: 0 0 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .saved-status {
-  color: #999;
+  color: var(--text-faint);
   font-size: 14px;
   text-align: center;
   margin-top: 40px;
@@ -34,17 +34,17 @@
 .saved-empty {
   text-align: center;
   margin-top: 64px;
-  color: #6b6b6b;
+  color: var(--text-muted);
 }
 
 .saved-empty p {
   font-family: "Fraunces", serif;
   font-size: 1.2rem;
   margin: 0 0 8px;
-  color: #242424;
+  color: var(--text);
 }
 
 .saved-empty span {
   font-size: 14px;
-  color: #999;
+  color: var(--text-faint);
 }

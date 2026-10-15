@@ -12,6 +12,25 @@
     />
     <meta name="theme-color" content="#5c1a2b" />
 
+    <!-- Set the colour theme before anything paints, so dark mode never
+         flashes white. Mirrors src/utils/theme.js. -->
+    <script>
+      (function () {
+        var theme = null;
+        try {
+          theme = localStorage.getItem("theme");
+        } catch (e) {}
+        if (theme !== "light" && theme !== "dark") {
+          theme =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
     <!-- Open Graph: how the link previews on WhatsApp, LinkedIn, etc.
          These are the site-level defaults. Per-article tags are injected
          for crawlers by middleware.js -->

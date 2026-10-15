@@ -3,7 +3,7 @@
 .edit-loading {
   text-align: center;
   margin-top: 80px;
-  color: #999;
+  color: var(--text-faint);
   font-family: "Inter", sans-serif;
 }
 
@@ -25,16 +25,16 @@
   justify-content: space-between;
   padding-bottom: 20px;
   margin-bottom: 28px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .edit-label {
   font-size: 14px;
-  color: #999;
+  color: var(--text-faint);
 }
 
 .edit-submit {
-  background: #5c1a2b;
+  background: var(--accent);
   color: #fff;
   padding: 8px 22px;
   border: none;
@@ -46,7 +46,7 @@
 }
 
 .edit-submit:hover {
-  background: #4a1522;
+  background: var(--accent-hover);
 }
 
 .edit-input {
@@ -56,7 +56,7 @@
   margin-bottom: 20px;
   width: 100%;
   font-family: "Fraunces", serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .edit-input.title {
@@ -67,23 +67,23 @@
 }
 
 .edit-input.title::placeholder {
-  color: #cfcfcf;
+  color: var(--placeholder);
 }
 
 .edit-input.description {
   font-size: 1.3rem;
   font-weight: 400;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin-bottom: 28px;
 }
 
 .edit-input.description::placeholder {
-  color: #cfcfcf;
+  color: var(--placeholder);
 }
 
 .edit-editor .ql-toolbar.ql-snow {
   border: none;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
   padding: 8px 0;
 }
 
@@ -97,12 +97,12 @@
   padding: 24px 0;
   font-size: 1.2rem;
   line-height: 1.75;
-  color: #242424;
+  color: var(--text);
 }
 
 .edit-editor .ql-editor.ql-blank::before {
   font-style: normal;
-  color: #cfcfcf;
+  color: var(--placeholder);
   left: 0;
   font-size: 1.2rem;
 }
@@ -116,4 +116,11 @@
 .edit-submit:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .edit-error {
+  color: var(--danger);
 }

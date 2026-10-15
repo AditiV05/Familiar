@@ -158,7 +158,7 @@ body {
 .auth-error {
   background: #fdf1f1;
   border: 1px solid #f3c9c9;
-  color: #b42318;
+  color: var(--danger);
   font-size: 13px;
   padding: 10px 12px;
   border-radius: 8px;
@@ -243,7 +243,7 @@ body {
 
 .auth-btn-google {
   width: 100%;
-  background: #fff;
+  background: var(--bg);
   color: #1f1f1f;
   border: 1.5px solid var(--auth-line);
   display: flex;
@@ -286,7 +286,7 @@ body {
 }
 
 .auth-success {
-  color: #6b6b6b;
+  color: var(--text-muted);
   font-size: 15px;
   margin-bottom: 16px;
   line-height: 1.5;
@@ -299,7 +299,7 @@ body {
 
 .auth-forgot a {
   font-size: 13px;
-  color: #5c1a2b;
+  color: var(--accent-text);
 }
 
 .auth-forgot a:hover {
@@ -312,7 +312,7 @@ body {
   align-items: center;
   text-align: center;
   padding: 32px 24px;
-  border: 1px solid #ededed;
+  border: 1px solid var(--border);
   border-radius: 12px;
   margin: 8px 0 4px;
 }
@@ -325,7 +325,7 @@ body {
   height: 48px;
   border-radius: 50%;
   background: #f7f0f1;
-  color: #5c1a2b;
+  color: var(--accent-text);
   margin-bottom: 16px;
 }
 
@@ -334,7 +334,7 @@ body {
 }
 
 .auth-confirm-text {
-  color: #6b6b6b;
+  color: var(--text-muted);
   font-size: 15px;
   line-height: 1.5;
   margin: 0;
@@ -352,13 +352,13 @@ body {
   font-family: "Inter";
   font-size: 13.5px;
   font-weight: 600;
-  color: #5c1a2b;
+  color: var(--accent-text);
   cursor: pointer;
   border-bottom: 1px solid transparent;
 }
 
 .auth-resend-btn:hover {
-  border-bottom-color: #5c1a2b;
+  border-bottom-color: var(--accent-text);
 }
 
 .auth-resend-btn:disabled {
@@ -382,4 +382,56 @@ body {
   border-radius: 8px;
   padding: 12px 14px;
   margin: 0;
+}
+
+/* Dark mode. The left panel is already dark, so it stays a deep black and
+   the form side takes the site's dark colours. --auth-ink flips to light,
+   so anything that used it as a fill needs its text flipped too. */
+:root[data-theme="dark"] {
+  --auth-ink: #f2f0ed;
+  --auth-paper: #121212;
+  --auth-warm: #121212;
+  --auth-muted: #a8a5a0;
+  --auth-line: #2e2e2e;
+  --auth-line-strong: #f2f0ed;
+}
+
+:root[data-theme="dark"] .auth-left {
+  background: #0a0a0a;
+  border-right: 1px solid #222;
+}
+
+:root[data-theme="dark"] .auth-btn-primary {
+  color: #121212;
+}
+
+:root[data-theme="dark"] .auth-field input::placeholder {
+  color: #5f5c58;
+}
+
+:root[data-theme="dark"] .auth-inapp-note {
+  background: #1a1a1a;
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .auth-error {
+  background: var(--danger-soft);
+}
+
+:root[data-theme="dark"] .auth-error {
+  border: 1px solid var(--danger-border);
+}
+
+:root[data-theme="dark"] .auth-btn-google {
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .auth-btn-google:hover {
+  border-color: var(--border-strong);
+}
+
+:root[data-theme="dark"] .auth-confirm-icon {
+  background: var(--accent-soft);
 }

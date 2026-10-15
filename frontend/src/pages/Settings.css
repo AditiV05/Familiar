@@ -5,7 +5,7 @@
   margin: 56px auto 96px;
   padding: 0 24px;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .settings-title {
@@ -17,15 +17,15 @@
 }
 
 .settings-sub {
-  color: #6b6b6b;
+  color: var(--text-muted);
   font-size: 14px;
   margin: 0 0 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .danger-zone {
-  border: 1px solid #f0caca;
+  border: 1px solid var(--danger-border);
   border-radius: 12px;
   padding: 24px;
   background: #fffafa;
@@ -35,13 +35,13 @@
   font-family: "Fraunces", serif;
   font-size: 1.3rem;
   font-weight: 600;
-  color: #b42318;
+  color: var(--danger);
   margin: 0 0 8px;
 }
 
 .danger-text {
   font-size: 14px;
-  color: #6b6b6b;
+  color: var(--text-muted);
   line-height: 1.5;
   margin: 0 0 20px;
 }
@@ -49,7 +49,7 @@
 .danger-label {
   display: block;
   font-size: 13px;
-  color: #242424;
+  color: var(--text);
   margin-bottom: 8px;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .danger-input:focus {
-  border-color: #b42318;
+  border-color: var(--danger);
 }
 
 .danger-btn {
@@ -92,7 +92,18 @@
 }
 
 .danger-error {
-  color: #b42318;
+  color: var(--danger);
   font-size: 13px;
   margin-top: 12px;
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .danger-zone {
+  background: var(--danger-soft);
+}
+
+:root[data-theme="dark"] .danger-input {
+  border: 1px solid var(--border-strong);
 }

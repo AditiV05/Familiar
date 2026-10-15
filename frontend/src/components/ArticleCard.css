@@ -2,7 +2,7 @@
 
 .article-card {
   padding: 26px 0;
-  border-bottom: 0.5px solid #ededed;
+  border-bottom: 0.5px solid var(--border);
   font-family: "Inter", sans-serif;
 }
 
@@ -28,16 +28,16 @@
 
 .card-author {
   font-size: 13px;
-  color: #242424;
+  color: var(--text);
 }
 
 .card-dot {
-  color: #999;
+  color: var(--text-faint);
 }
 
 .card-date {
   font-size: 13px;
-  color: #999;
+  color: var(--text-faint);
 }
 
 .card-main {
@@ -60,13 +60,13 @@
   line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0 0 6px;
-  color: #242424;
+  color: var(--text);
 }
 
 .card-description {
   font-family: "Fraunces", serif;
   font-size: 0.95rem;
-  color: #6b6b6b;
+  color: var(--text-muted);
   line-height: 1.45;
   margin: 0;
   display: -webkit-box;
@@ -81,7 +81,7 @@
   border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #f2f2f2;
+  background: var(--bg-muted);
 }
 
 .card-thumb img {

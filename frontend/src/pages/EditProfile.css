@@ -3,7 +3,7 @@
 .settings-loading {
   text-align: center;
   margin-top: 80px;
-  color: #999;
+  color: var(--text-faint);
   font-family: "Inter", sans-serif;
 }
 
@@ -12,7 +12,7 @@
   margin: 56px auto 96px;
   padding: 0 24px;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .settings-title {
@@ -24,11 +24,11 @@
 }
 
 .settings-sub {
-  color: #6b6b6b;
+  color: var(--text-muted);
   font-size: 14px;
   margin: 0 0 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .settings-field {
@@ -41,7 +41,7 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin-bottom: 8px;
 }
 
@@ -53,7 +53,7 @@
   padding: 11px 13px;
   font-size: 15px;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.15s ease;
@@ -66,7 +66,7 @@
 
 .settings-field input:focus,
 .settings-field textarea:focus {
-  border-color: #5c1a2b;
+  border-color: var(--accent-text);
 }
 
 .settings-actions {
@@ -77,9 +77,9 @@
 }
 
 .settings-cancel {
-  background: #fff;
-  color: #242424;
-  border: 1px solid #ddd;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
   padding: 9px 20px;
   font-size: 14px;
@@ -89,11 +89,11 @@
 }
 
 .settings-cancel:hover {
-  background: #f5f5f5;
+  background: var(--bg-hover);
 }
 
 .settings-save {
-  background: #5c1a2b;
+  background: var(--accent);
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -105,7 +105,7 @@
 }
 
 .settings-save:hover {
-  background: #4a1522;
+  background: var(--accent-hover);
 }
 
 .settings-save:disabled {
@@ -116,6 +116,13 @@
 .settings-message {
   text-align: right;
   font-size: 13px;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin-top: 12px;
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .settings-field textarea {
+  border: 1px solid var(--border-strong);
 }

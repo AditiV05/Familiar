@@ -19,7 +19,7 @@
   font-size: 2rem;
   font-weight: 600;
   margin: 0 0 24px;
-  color: #242424;
+  color: var(--text);
 }
 
 .verify-text {
@@ -30,12 +30,12 @@
 }
 
 .verify-error {
-  color: #b42318;
+  color: var(--danger);
 }
 
 .verify-btn {
   display: inline-block;
-  background: #5c1a2b;
+  background: var(--accent);
   color: #fff;
   padding: 10px 24px;
   border-radius: 999px;
@@ -44,5 +44,12 @@
 }
 
 .verify-btn:hover {
-  background: #4a1522;
+  background: var(--accent-hover);
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .verify-text {
+  color: var(--text-muted);
 }
