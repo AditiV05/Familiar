@@ -4,6 +4,8 @@ const router = express.Router();
 const Article = require("../models/Article");
 const authenticateToken = require("../middleware/authMiddleware");
 const createNotification = require("../utils/createNotification");
+const summarise = require("../utils/summarise");
+const Draft = require("../models/Draft");
 
 // Pull the first <img src> out of the article body.
 // Mirrors getFirstImage(html) in frontend/src/components/ArticleCard.jsx
@@ -16,27 +18,6 @@ const getFirstImage = (html) => {
   // Crawlers need an absolute URL. Skip relative paths and data URIs.
   if (!/^https?:\/\//i.test(src)) return null;
   return src;
-};
-
-// Turn article HTML into a short plain-text summary for the OG description
-// when the article has no subtitle of its own.
-const summarise = (html, maxLength = 160) => {
-  if (!html) return "";
-  const text = html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (text.length <= maxLength) return text;
-  const cut = text.slice(0, maxLength);
-  const lastSpace = cut.lastIndexOf(" ");
-  return (lastSpace > 60 ? cut.slice(0, lastSpace) : cut).trim() + "...";
 };
 
 router.get("/", async (req, res) => {
@@ -117,7 +98,7 @@ router.get("/:id/meta", async (req, res) => {
 });
 
 router.post("/", authenticateToken, async (req, res) => {
-  const { title, description, content } = req.body;
+  const { title, description, content, draftId } = req.body;
   const newArticle = new Article({
     title,
     description,
@@ -127,6 +108,19 @@ router.post("/", authenticateToken, async (req, res) => {
 
   try {
     const savedArticle = await newArticle.save();
+
+    // Publishing from a draft uses it up. Scoped to the author, so a stray
+    // id can never delete someone else's draft.
+    if (draftId && mongoose.Types.ObjectId.isValid(draftId)) {
+      try {
+        await Draft.deleteOne({ _id: draftId, author: req.user.id });
+      } catch (err) {
+        // The article is already live. A leftover draft is not worth failing
+        // the publish over.
+        console.error("Failed to remove published draft:", err.message);
+      }
+    }
+
     res.status(201).json(savedArticle);
   } catch (err) {
     res.status(400).json({ message: err.message });
