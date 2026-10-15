@@ -6,7 +6,7 @@
   margin: 48px auto 96px;
   padding: 0 24px;
   font-family: "Inter", sans-serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .drafts-title {
@@ -19,21 +19,21 @@
 
 .drafts-sub {
   font-size: 15px;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin: 0 0 8px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .drafts-status {
-  color: #999;
+  color: var(--text-faint);
   font-size: 14px;
   text-align: center;
   margin-top: 40px;
 }
 
 .drafts-error {
-  color: #b42318;
+  color: var(--danger);
   font-size: 14px;
   margin: 16px 0 0;
 }
@@ -43,7 +43,7 @@
   align-items: flex-start;
   gap: 16px;
   padding: 22px 0;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .draft-link {
@@ -63,18 +63,18 @@
 }
 
 .draft-name.untitled {
-  color: #999;
+  color: var(--text-faint);
   font-weight: 400;
 }
 
 .draft-link:hover .draft-name {
-  color: #5c1a2b;
+  color: var(--accent-text);
 }
 
 .draft-preview {
   font-size: 14px;
   line-height: 1.5;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin: 0 0 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -84,15 +84,15 @@
 
 .draft-meta {
   font-size: 13px;
-  color: #999;
+  color: var(--text-faint);
 }
 
 .draft-delete {
   flex-shrink: 0;
   background: none;
-  border: 1px solid #f0caca;
+  border: 1px solid var(--danger-border);
   border-radius: 999px;
-  color: #b42318;
+  color: var(--danger);
   font-family: "Inter", sans-serif;
   font-size: 13px;
   padding: 6px 14px;
@@ -101,23 +101,23 @@
 }
 
 .draft-delete:hover {
-  background: #fff5f5;
+  background: var(--danger-soft);
 }
 
 .drafts-empty {
   text-align: center;
   margin-top: 64px;
-  color: #6b6b6b;
+  color: var(--text-muted);
 }
 
 .drafts-empty p {
   font-family: "Fraunces", serif;
   font-size: 1.2rem;
   margin: 0 0 8px;
-  color: #242424;
+  color: var(--text);
 }
 
 .drafts-empty span {
   font-size: 14px;
-  color: #999;
+  color: var(--text-faint);
 }

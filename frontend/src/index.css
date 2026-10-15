@@ -1,3 +1,68 @@
+/* Colours. Every page reads these, so dark mode is one block below.
+   The theme is set on <html data-theme> by the script in index.html,
+   before the page paints, and changed from the profile menu. */
+:root {
+  color-scheme: light;
+  --bg: #fff;
+  /* Menus, pop-ups and dialogs that float above the page */
+  --surface: #fff;
+  --bg-subtle: #f9f9f9;
+  --bg-hover: #f5f5f5;
+  --bg-muted: #f2f2f2;
+  --text: #242424;
+  --text-muted: #6b6b6b;
+  --text-faint: #999;
+  --placeholder: #cfcfcf;
+  --border: #ededed;
+  --border-strong: #ddd;
+  --accent: #5c1a2b;
+  --accent-hover: #4a1522;
+  --accent-text: #5c1a2b;
+  --accent-soft: #fbf3f4;
+  --accent-soft-hover: #f6e9eb;
+  --danger: #b42318;
+  --danger-soft: #fff5f5;
+  --danger-soft-hover: #ffecec;
+  --danger-border: #f0caca;
+  /* Pure black accents: the logo and the "Get started" button */
+  --ink: #000;
+  --ink-hover: #191919;
+  --on-ink: #fff;
+  --shadow: rgba(0, 0, 0, 0.15);
+  --overlay: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --bg-subtle: #1a1a1a;
+  --bg-hover: #222;
+  --bg-muted: #262626;
+  --text: #e8e6e3;
+  --text-muted: #a8a5a0;
+  --text-faint: #7d7a76;
+  --placeholder: #55524e;
+  --border: #2a2a2a;
+  --border-strong: #3a3a3a;
+  /* The burgundy is too dark to read on a dark page. Buttons get a lifted
+     shade that still carries white text; links and icons a rose tint. */
+  --accent: #7d2a3e;
+  --accent-hover: #8f3349;
+  --accent-text: #e3a3b4;
+  --accent-soft: #24171b;
+  --accent-soft-hover: #2e1c21;
+  --danger: #f2877d;
+  --danger-soft: #261614;
+  --danger-soft-hover: #321b18;
+  --danger-border: #5a2b27;
+  --ink: #f2f0ed;
+  --ink-hover: #d9d6d1;
+  --on-ink: #121212;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --overlay: rgba(0, 0, 0, 0.65);
+}
+
 html,
 body {
   overflow-x: hidden;
@@ -5,6 +70,11 @@ body {
   max-width: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
 }
 
 * {
@@ -19,4 +89,11 @@ body {
 
 .app-main {
   flex: 1;
+}
+
+/* Form fields with no background of their own (the title box in the
+   writer, comment boxes) would turn a grey slab under the dark colour
+   scheme. :where keeps this weaker than any class that sets a background. */
+:where(:root[data-theme="dark"]) :where(input, textarea, select) {
+  background-color: transparent;
 }

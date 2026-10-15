@@ -19,27 +19,27 @@
   justify-content: space-between;
   padding-bottom: 20px;
   margin-bottom: 28px;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
 }
 
 .writer-label {
   font-size: 14px;
-  color: #999;
+  color: var(--text-faint);
 }
 
 .writer-label-error {
-  color: #b42318;
+  color: var(--danger);
 }
 
 .writer-loading {
   text-align: center;
   margin-top: 80px;
-  color: #999;
+  color: var(--text-faint);
   font-family: "Inter", sans-serif;
 }
 
 .writer-submit-btn {
-  background: #5c1a2b;
+  background: var(--accent);
   color: #fff;
   padding: 8px 22px;
   border: none;
@@ -51,7 +51,7 @@
 }
 
 .writer-submit-btn:hover {
-  background: #4a1522;
+  background: var(--accent-hover);
 }
 
 /* Title + description inputs */
@@ -62,7 +62,7 @@
   margin-bottom: 20px;
   width: 100%;
   font-family: "Fraunces", serif;
-  color: #242424;
+  color: var(--text);
 }
 
 .title-input {
@@ -73,24 +73,24 @@
 }
 
 .title-input::placeholder {
-  color: #cfcfcf;
+  color: var(--placeholder);
 }
 
 .description-input {
   font-size: 1.3rem;
   font-weight: 400;
-  color: #6b6b6b;
+  color: var(--text-muted);
   margin-bottom: 28px;
 }
 
 .description-input::placeholder {
-  color: #cfcfcf;
+  color: var(--placeholder);
 }
 
 /* Quill editor */
 .writer-editor .ql-toolbar.ql-snow {
   border: none;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid var(--border);
   padding: 8px 0;
 }
 
@@ -104,12 +104,12 @@
   padding: 24px 0;
   font-size: 1.2rem;
   line-height: 1.75;
-  color: #242424;
+  color: var(--text);
 }
 
 .writer-editor .ql-editor.ql-blank::before {
   font-style: normal;
-  color: #cfcfcf;
+  color: var(--placeholder);
   left: 0;
   font-size: 1.2rem;
 }
@@ -123,4 +123,11 @@
 .writer-submit-btn:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+
+/* Dark mode for spots whose light colour is a one-off shade, kept exact
+   in light mode. */
+:root[data-theme="dark"] .error-message {
+  color: var(--danger);
 }
