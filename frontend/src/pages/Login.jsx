@@ -215,7 +215,7 @@ const Login = () => {
               </button>
 
               {googleLoading && (
-                <p className="auth-inapp-note">
+                <p className="auth-wake-note" role="status">
                   Waking the server. This can take a moment the first time.
                 </p>
               )}
