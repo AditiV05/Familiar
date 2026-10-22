@@ -39,8 +39,7 @@ function Layout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/article/:id" element={<Article />} />
-          <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/profile/:id/" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="/search" element={<SearchResults />} />
           <Route
             path="/write"

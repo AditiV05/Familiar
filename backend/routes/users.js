@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/User");
 const Article = require("../models/Article");
+const Draft = require("../models/Draft");
 const authenticateToken = require("../middleware/authMiddleware");
 
 // Fields anyone may see on a profile. Never send the whole user document:
@@ -77,6 +78,13 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     }
 
     await Article.deleteMany({ author: req.params.id });
+    await Draft.deleteMany({ author: req.params.id });
+    // Take them out of everyone's follower and following lists, so counts
+    // elsewhere stay true.
+    await User.updateMany(
+      { $or: [{ followers: req.params.id }, { following: req.params.id }] },
+      { $pull: { followers: req.params.id, following: req.params.id } },
+    );
     await User.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Account deleted" });
@@ -85,62 +93,47 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/:id/follow", authenticateToken, async (req, res) => {
+// Follow and unfollow each change two users, so each side is a single atomic
+// update: $addToSet never adds an id twice and $pull removes it, even when a
+// double tap sends two requests at once. A read-then-save version let both
+// requests pass the "already following?" check and add the id twice.
+const changeFollow = (follow) => async (req, res) => {
   try {
     const { id } = req.params;
+    const me = req.user.id;
 
-    if (id === req.user.id) {
-      return res.status(400).json({ message: "You cannot follow yourself" });
-    }
-
-    const userToFollow = await User.findById(id);
-    const currentUser = await User.findById(req.user.id);
-
-    if (!userToFollow)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ message: "User not found" });
-
-    if (!currentUser.following.includes(id)) {
-      currentUser.following.push(id);
-      userToFollow.followers.push(req.user.id);
-
-      await currentUser.save();
-      await userToFollow.save();
+    }
+    if (id === me) {
+      const action = follow ? "follow" : "unfollow";
+      return res.status(400).json({ message: `You cannot ${action} yourself` });
     }
 
-    res.json({ message: `You followed ${userToFollow.name}` });
+    const [target, currentUser] = await Promise.all([
+      User.exists({ _id: id }),
+      User.exists({ _id: me }),
+    ]);
+    if (!target) return res.status(404).json({ message: "User not found" });
+    // A valid token for an account that has since been deleted.
+    if (!currentUser)
+      return res.status(401).json({ message: "Your account no longer exists" });
+
+    const op = follow ? "$addToSet" : "$pull";
+    await Promise.all([
+      User.updateOne({ _id: me }, { [op]: { following: id } }),
+      User.updateOne({ _id: id }, { [op]: { followers: me } }),
+    ]);
+
+    // Send back the real count so the page shows what is stored, not a guess.
+    const updated = await User.findById(id).select("followers").lean();
+    res.json({ following: follow, followers: updated.followers.length });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+};
 
-router.post("/:id/unfollow", authenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (id === req.user.id) {
-      return res.status(400).json({ message: "You cannot unfollow yourself" });
-    }
-
-    const userToUnfollow = await User.findById(id);
-    const currentUser = await User.findById(req.user.id);
-
-    if (!userToUnfollow)
-      return res.status(404).json({ message: "User not found" });
-
-    currentUser.following = currentUser.following.filter(
-      (uid) => uid.toString() !== id,
-    );
-    userToUnfollow.followers = userToUnfollow.followers.filter(
-      (uid) => uid.toString() !== req.user.id,
-    );
-
-    await currentUser.save();
-    await userToUnfollow.save();
-
-    res.json({ message: `You unfollowed ${userToUnfollow.name}` });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.post("/:id/follow", authenticateToken, changeFollow(true));
+router.post("/:id/unfollow", authenticateToken, changeFollow(false));
 
 module.exports = router;
