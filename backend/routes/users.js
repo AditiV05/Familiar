@@ -125,8 +125,12 @@ const changeFollow = (follow) => async (req, res) => {
       User.updateOne({ _id: id }, { [op]: { followers: me } }),
     ]);
 
-    // Send back the real count so the page shows what is stored, not a guess.
-    const updated = await User.findById(id).select("followers").lean();
+    // Count the way the profile page does: through populate, which drops ids
+    // whose account has been deleted. A raw length would count those too, and
+    // the number would jump by one more than it should until a refresh.
+    const updated = await User.findById(id)
+      .select("followers")
+      .populate("followers", "_id");
     res.json({ following: follow, followers: updated.followers.length });
   } catch (err) {
     res.status(500).json({ message: err.message });
