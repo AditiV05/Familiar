@@ -1,13 +1,38 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/User");
 const Article = require("../models/Article");
 const authenticateToken = require("../middleware/authMiddleware");
 
+// Fields anyone may see on a profile. Never send the whole user document:
+// it also holds the password hash and any pending reset or verification
+// token.
+const PUBLIC_FIELDS = "name bio followers following date";
+
+// This route is public, but a signed-in owner also gets their own email.
+// A missing or bad token just means "not the owner", never an error.
+const viewerId = (req) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return null;
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET).id;
+  } catch {
+    return null;
+  }
+};
+
 // ✅ Get User Profile & Their Articles
 router.get("/:id", async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isOwner = viewerId(req) === req.params.id;
     const user = await User.findById(req.params.id)
+      .select(isOwner ? `${PUBLIC_FIELDS} email` : PUBLIC_FIELDS)
       .populate("followers", "name")
       .populate("following", "name");
 
@@ -113,16 +138,6 @@ router.post("/:id/unfollow", authenticateToken, async (req, res) => {
     await userToUnfollow.save();
 
     res.json({ message: `You unfollowed ${userToUnfollow.name}` });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// ✅ Get All Registered Users
-router.get("/", async (req, res) => {
-  try {
-    const users = await User.find().select("name email"); // optional: add more fields
-    res.json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

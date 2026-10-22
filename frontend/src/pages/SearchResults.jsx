@@ -44,9 +44,7 @@ const SearchResults = () => {
         users.map((user) => (
           <div key={user._id}>
             <Link to={`/profile/${user._id}`}>
-              <p>
-                {user.name} ({user.email})
-              </p>
+              <p>{user.name}</p>
             </Link>
           </div>
         ))
