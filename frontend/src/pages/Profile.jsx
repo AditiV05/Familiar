@@ -10,37 +10,89 @@ const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
   const [articles, setArticles] = useState([]);
+  const [loadError, setLoadError] = useState("");
+  const [followBusy, setFollowBusy] = useState(false);
+  const [followError, setFollowError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
+    // Clear the last profile so moving between profiles never shows the
+    // previous person while the next one loads.
+    setUser(null);
+    setLoadError("");
+    setFollowError("");
+
+    let cancelled = false;
     // Signed in, the server also returns your own email on your profile.
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    axios.get(`${API_URL}/users/${id}`, { headers }).then((res) => {
-      setUser(res.data.user);
-      setArticles(
-        res.data.articles.sort((a, b) => new Date(b.date) - new Date(a.date)),
-      );
-      setIsFollowing(
-        res.data.user.followers.some((f) => f._id === currentUserId),
-      );
-    });
-  }, [id, currentUserId, token]);
+    axios
+      .get(`${API_URL}/users/${id}`, { headers })
+      .then((res) => {
+        if (cancelled) return;
+        setUser(res.data.user);
+        setFollowerCount(res.data.user.followers.length);
+        setArticles(
+          res.data.articles.sort((a, b) => new Date(b.date) - new Date(a.date)),
+        );
+        setIsFollowing(
+          res.data.user.followers.some((f) => f._id === currentUserId),
+        );
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(
+          err.response?.status === 404
+            ? "This profile doesn't exist."
+            : "Couldn't load this profile. Check your connection and try again.",
+        );
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, currentUserId, token, reloadKey]);
 
   const handleFollowToggle = async () => {
+    // One request at a time. A second tap mid-request used to send a second
+    // follow and count the same person twice.
+    if (followBusy) return;
+    setFollowBusy(true);
+    setFollowError("");
+
     const endpoint = isFollowing ? "unfollow" : "follow";
     try {
-      await axios.post(
+      const res = await axios.post(
         `${API_URL}/users/${id}/${endpoint}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      setIsFollowing(!isFollowing);
+      setIsFollowing(res.data.following);
+      setFollowerCount(res.data.followers);
     } catch (err) {
       console.error("Follow/unfollow failed", err);
+      setFollowError("Couldn't update. Try again.");
+    } finally {
+      setFollowBusy(false);
     }
   };
+
+  if (loadError) {
+    return (
+      <div className="profile-status">
+        <p>{loadError}</p>
+        <button
+          className="edit-profile-btn"
+          onClick={() => setReloadKey((k) => k + 1)}
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
 
   if (!user) return <p className="profile-loading">Loading...</p>;
 
@@ -62,12 +114,20 @@ const Profile = () => {
         )}
 
         {token && currentUserId !== id && (
-          <button
-            className={`follow-btn ${isFollowing ? "unfollow" : "follow"}`}
-            onClick={handleFollowToggle}
-          >
-            {isFollowing ? "Following" : "Follow"}
-          </button>
+          <>
+            <button
+              className={`follow-btn ${isFollowing ? "unfollow" : "follow"}`}
+              onClick={handleFollowToggle}
+              disabled={followBusy}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </button>
+            {followError && (
+              <p className="profile-follow-error" role="alert">
+                {followError}
+              </p>
+            )}
+          </>
         )}
 
         {token && currentUserId === id && (
@@ -82,7 +142,7 @@ const Profile = () => {
 
       <div className="profile-stats">
         <div className="stat">
-          <span className="stat-num">{user.followers.length}</span>
+          <span className="stat-num">{followerCount}</span>
           <span className="stat-label">Followers</span>
         </div>
         <div className="stat">

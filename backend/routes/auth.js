@@ -11,9 +11,16 @@ require("../config/passport");
 
 const VERIFY_WINDOW = 24 * 60 * 60 * 1000; // 24 hours
 
+// Form fields must arrive as plain text. A JSON object such as
+// { "$gt": "" } would otherwise reach the database as a query operator.
+const notText = (...values) => values.some((v) => typeof v !== "string");
+const badInput = (res) =>
+  res.status(400).json({ message: "Please fill in every field." });
+
 //sign up
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
+  if (notText(name, email, password)) return badInput(res);
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -51,6 +58,7 @@ router.post("/signup", async (req, res) => {
 // login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  if (notText(email, password)) return badInput(res);
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User does not exist" });
@@ -113,6 +121,7 @@ router.get("/verify/:token", async (req, res) => {
 // Resend verification email
 router.post("/resend-verification", async (req, res) => {
   const { email } = req.body;
+  if (notText(email)) return badInput(res);
   try {
     const user = await User.findOne({ email });
 
@@ -141,6 +150,7 @@ router.post("/resend-verification", async (req, res) => {
 // Forgot password - request a reset link
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
+  if (notText(email)) return badInput(res);
   try {
     const user = await User.findOne({ email });
 
@@ -169,6 +179,7 @@ router.post("/forgot-password", async (req, res) => {
 // Reset password - set a new password using the token
 router.post("/reset-password/:token", async (req, res) => {
   const { password } = req.body;
+  if (notText(password)) return badInput(res);
   try {
     if (!password || password.length < 6) {
       return res
