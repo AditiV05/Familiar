@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("../models/User");
-const crypto = require("crypto");
+const { createToken, hashToken } = require("../utils/tokens");
 const { sendVerificationEmail, sendResetEmail } = require("../utils/sendEmail");
 
 const router = express.Router();
@@ -20,13 +20,14 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const { token: verificationToken, hash: verificationHash } =
+      createToken();
 
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      verificationToken,
+      verificationToken: verificationHash,
       verificationTokenExpires: Date.now() + VERIFY_WINDOW,
       isVerified: false,
     });
@@ -69,9 +70,14 @@ router.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
 
-    // strip the password hash before sending the user back to the client
-    const userSafe = user.toObject();
-    delete userSafe.password;
+    // Only what the app needs. The full record also holds the password hash
+    // and any pending reset or verification token.
+    const userSafe = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      bio: user.bio,
+    };
 
     res.status(200).json({ user: userSafe, token });
   } catch (err) {
@@ -83,7 +89,7 @@ router.post("/login", async (req, res) => {
 router.get("/verify/:token", async (req, res) => {
   try {
     const user = await User.findOne({
-      verificationToken: req.params.token,
+      verificationToken: hashToken(req.params.token),
       verificationTokenExpires: { $gt: Date.now() },
     });
 
@@ -113,8 +119,8 @@ router.post("/resend-verification", async (req, res) => {
     // Only act if the account exists AND is still unverified.
     // Respond identically either way, so this can't be used to probe accounts.
     if (user && !user.isVerified) {
-      const verificationToken = crypto.randomBytes(32).toString("hex");
-      user.verificationToken = verificationToken;
+      const { token: verificationToken, hash } = createToken();
+      user.verificationToken = hash;
       user.verificationTokenExpires = Date.now() + VERIFY_WINDOW;
       await user.save();
 
@@ -141,8 +147,8 @@ router.post("/forgot-password", async (req, res) => {
     // Always respond the same way, whether or not the account exists,
     // so this can't be used to discover which emails are registered.
     if (user) {
-      const resetToken = crypto.randomBytes(32).toString("hex");
-      user.resetPasswordToken = resetToken;
+      const { token: resetToken, hash } = createToken();
+      user.resetPasswordToken = hash;
       user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
       await user.save();
 
@@ -171,7 +177,7 @@ router.post("/reset-password/:token", async (req, res) => {
     }
 
     const user = await User.findOne({
-      resetPasswordToken: req.params.token,
+      resetPasswordToken: hashToken(req.params.token),
       resetPasswordExpires: { $gt: Date.now() },
     });
 
@@ -196,7 +202,7 @@ router.post("/reset-password/:token", async (req, res) => {
 router.get("/reset-password/:token/check", async (req, res) => {
   try {
     const user = await User.findOne({
-      resetPasswordToken: req.params.token,
+      resetPasswordToken: hashToken(req.params.token),
       resetPasswordExpires: { $gt: Date.now() },
     });
 

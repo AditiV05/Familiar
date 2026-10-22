@@ -15,7 +15,9 @@ const Profile = () => {
   const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
-    axios.get(`${API_URL}/users/${id}`).then((res) => {
+    // Signed in, the server also returns your own email on your profile.
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    axios.get(`${API_URL}/users/${id}`, { headers }).then((res) => {
       setUser(res.data.user);
       setArticles(
         res.data.articles.sort((a, b) => new Date(b.date) - new Date(a.date)),
@@ -24,7 +26,7 @@ const Profile = () => {
         res.data.user.followers.some((f) => f._id === currentUserId),
       );
     });
-  }, [id, currentUserId]);
+  }, [id, currentUserId, token]);
 
   const handleFollowToggle = async () => {
     const endpoint = isFollowing ? "unfollow" : "follow";
