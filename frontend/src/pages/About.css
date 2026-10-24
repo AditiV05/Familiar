@@ -1,107 +1,466 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap");
 
-/* Set like an article page, so it reads like one */
-.about-container {
-  max-width: 680px;
-  margin: 56px auto 96px;
-  padding: 0 24px;
+/* A walk-through page: an opening screen, numbered chapters that fade in as
+   you scroll, one full-width moment, and a closing call to action. Colours
+   come from the shared variables in index.css, so dark mode just works. */
+
+.about {
   font-family: "Inter", sans-serif;
   color: var(--text);
 }
 
-.about-header {
-  padding-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+/* Large italic Fraunces swaps in curly "wonky" letters above optical size
+   20. Hold italics there so they stay clean at display sizes. */
+.about em,
+.about-turn-quote {
+  font-variation-settings: "opsz" 20;
 }
 
-.about-kicker {
+/* ---------- Reveal on scroll ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Opening screen ---------- */
+
+.about-hero {
+  min-height: calc(100vh - 56px);
+  min-height: calc(100svh - 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 64px 32px 48px;
+  box-sizing: border-box;
+}
+
+.about-eyebrow {
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent-text);
-  margin: 0 0 12px;
+  margin: 0 0 24px;
 }
 
-.about-title {
+.about-hero-title {
   font-family: "Fraunces", serif;
-  font-size: 2.75rem;
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  margin: 0 0 14px;
+  font-size: clamp(2.6rem, 7.5vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0 0 28px;
 }
 
-.about-lede {
+.about-hero-title em {
+  font-weight: 500;
+  color: var(--accent-text);
+}
+
+.about-hero-sub {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 34ch;
+  margin: 0 0 48px;
+}
+
+.about-scroll-cue {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font: 500 14px "Inter", sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.about-scroll-cue:hover {
+  background: var(--bg-hover);
+}
+
+.about-scroll-cue span {
+  display: inline-block;
+  animation: about-nudge 1.8s ease-in-out infinite;
+}
+
+@keyframes about-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-scroll-cue span {
+    animation: none;
+  }
+}
+
+/* ---------- Chapter rail (wide screens) ---------- */
+
+.about-rail {
+  display: none;
+}
+
+/* Only where there is clear room left of the 1040px column for the labels */
+@media (min-width: 1400px) {
+  .about-rail {
+    position: fixed;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .about-rail.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.about-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  color: var(--text-faint);
+  text-align: left;
+}
+
+.about-rail-num {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  width: 22px;
+}
+
+.about-rail-label {
+  font-size: 13px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.about-rail-item:hover .about-rail-label,
+.about-rail-item.active .about-rail-label {
+  opacity: 1;
+  transform: none;
+}
+
+.about-rail-item.active {
+  color: var(--accent-text);
+}
+
+/* Over the burgundy panel the rail's colours would vanish, so go light */
+.about-rail.on-accent .about-rail-item {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.about-rail.on-accent .about-rail-item.active {
+  color: #fff;
+}
+
+.about-rail-item.active .about-rail-num::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 6px 2px -12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- Chapters ---------- */
+
+.about-chapter {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14vh 32px;
+  box-sizing: border-box;
+}
+
+.about-chapter-wide {
+  max-width: 1040px;
+}
+
+.about-num {
+  display: block;
+  font-family: "Fraunces", serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--accent-text);
+  margin-bottom: 18px;
+}
+
+.about-chapter-head h2 {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.about-chapter-note {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 40ch;
+  margin: 18px 0 0;
+}
+
+.about-chapter-body {
+  margin-top: 32px;
+}
+
+.about-chapter-body p {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.15rem, 1.9vw, 1.35rem);
+  line-height: 1.7;
+  color: var(--text);
+  max-width: 36em;
+  margin: 0 0 1em;
+}
+
+.about-chapter-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- The turning point, full width ---------- */
+
+.about-turn {
+  background: var(--accent);
+  color: #fff;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.about-turn-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 14vh 32px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.about-num-light {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.about-turn-lead {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 28px;
+}
+
+.about-turn-quote {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 6vw, 4.8rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  max-width: 16ch;
+  margin: 0;
+}
+
+/* ---------- The unseen work ---------- */
+
+.about-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 48px;
+}
+
+@media (min-width: 720px) {
+  .about-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.about-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-subtle);
+}
+
+.about-card-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font: 600 13px "Inter", sans-serif;
+  margin-bottom: 18px;
+}
+
+.about-card h3 {
   font-family: "Fraunces", serif;
   font-size: 1.35rem;
-  line-height: 1.4;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 8px;
+}
+
+.about-card p {
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--text-muted);
   margin: 0;
 }
 
-.about-body {
-  font-family: "Fraunces", serif;
-  font-size: 1.25rem;
-  line-height: 1.75;
-  padding: 32px 0 8px;
+.about-after-cards {
+  margin-top: 56px;
 }
 
-.about-body p {
-  margin: 0 0 1em;
-}
+/* ---------- Ending ---------- */
 
-/* Same pull quote as in articles (pages/Article.css) */
-.about-body .pull-quote {
-  margin: 1.5em 0;
-  padding: 0 1em;
-  font-size: 1.4em;
-  font-style: italic;
-  line-height: 1.45;
-  text-align: center;
-  color: var(--text-muted);
-  font-variation-settings: "opsz" 20;
-}
-
-.about-footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 32px;
-  padding-top: 28px;
+.about-end {
   border-top: 1px solid var(--border);
 }
 
-.about-link {
-  padding: 8px 18px;
+.about-end-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 16vh 32px 18vh;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.about-end .about-num {
+  margin-bottom: 24px;
+}
+
+.about-end-title {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 44px;
+}
+
+.about-end-title em {
+  font-weight: 500;
+  color: var(--accent-text);
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.about-btn {
+  padding: 11px 22px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text);
-  transition: background 0.15s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
 }
 
-.about-link:hover {
+.about-btn:hover {
   background: var(--bg-hover);
+  transform: translateY(-1px);
 }
 
-@media (max-width: 768px) {
-  .about-container {
-    margin-top: 32px;
-    padding: 0 20px;
+.about-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.about-btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 600px) {
+  .about-hero,
+  .about-chapter,
+  .about-turn-inner,
+  .about-end-inner {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
-  .about-title {
-    font-size: 2rem;
-    line-height: 1.15;
+  .about-chapter {
+    padding-top: 10vh;
+    padding-bottom: 10vh;
   }
 
-  .about-lede {
-    font-size: 1.15rem;
+  .about-card {
+    padding: 22px;
   }
 
-  .about-body {
-    font-size: 1.125rem;
-    padding-top: 24px;
+  .about-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-btn {
+    text-align: center;
+  }
+
+  /* Let the closing line wrap on its own instead of at a desktop break */
+  .about-end-title br {
+    display: none;
   }
 }
