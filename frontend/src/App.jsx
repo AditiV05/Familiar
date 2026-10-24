@@ -19,6 +19,7 @@ import SearchResults from "./pages/SearchResults";
 import EditArticle from "./pages/EditArticle";
 import Saved from "./pages/Saved";
 import Drafts from "./pages/Drafts";
+import About from "./pages/About";
 import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -41,6 +42,7 @@ function Layout() {
           <Route path="/article/:id" element={<Article />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/about" element={<About />} />
           <Route
             path="/write"
             element={
