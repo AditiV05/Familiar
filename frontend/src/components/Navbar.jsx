@@ -292,6 +292,9 @@ const Navbar = () => {
                 <Link to="/settings" className="dropdown-item">
                   Settings
                 </Link>
+                <Link to="/about" className="dropdown-item">
+                  About
+                </Link>
                 <button onClick={handleLogout} className="dropdown-item logout">
                   Sign out
                 </button>
@@ -300,6 +303,9 @@ const Navbar = () => {
           </>
         ) : (
           <>
+            <Link to="/about" className="navbar-link">
+              About
+            </Link>
             <Link to="/login" className="navbar-link">
               Sign In
             </Link>

@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&display=swap");
+
+/* Set like an article page, so it reads like one */
+.about-container {
+  max-width: 680px;
+  margin: 56px auto 96px;
+  padding: 0 24px;
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+}
+
+.about-header {
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin: 0 0 12px;
+}
+
+.about-title {
+  font-family: "Fraunces", serif;
+  font-size: 2.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+
+.about-lede {
+  font-family: "Fraunces", serif;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.about-body {
+  font-family: "Fraunces", serif;
+  font-size: 1.25rem;
+  line-height: 1.75;
+  padding: 32px 0 8px;
+}
+
+.about-body p {
+  margin: 0 0 1em;
+}
+
+/* Same pull quote as in articles (pages/Article.css) */
+.about-body .pull-quote {
+  margin: 1.5em 0;
+  padding: 0 1em;
+  font-size: 1.4em;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--text-muted);
+  font-variation-settings: "opsz" 20;
+}
+
+.about-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.about-link {
+  padding: 8px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--text);
+  transition: background 0.15s ease;
+}
+
+.about-link:hover {
+  background: var(--bg-hover);
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    margin-top: 32px;
+    padding: 0 20px;
+  }
+
+  .about-title {
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+
+  .about-lede {
+    font-size: 1.15rem;
+  }
+
+  .about-body {
+    font-size: 1.125rem;
+    padding-top: 24px;
+  }
+}
