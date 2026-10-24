@@ -134,6 +134,27 @@
   color: var(--ink);
 }
 
+/* A page tab in the bar. NavLink adds .active on its own page. */
+.nav-tab {
+  position: relative;
+  font-size: 14px;
+}
+
+.nav-tab.active {
+  color: var(--ink);
+}
+
+.nav-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-text);
+}
+
 .write-link {
   border-radius: 20px;
   color: var(--text-muted);
@@ -289,12 +310,38 @@ a {
     width: 80px;
   }
 
+  /* On the narrowest phones the search box gives up width before anything
+     on the right is pushed off screen. It never grows past its usual size. */
+  .navbar-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .simple-search-form {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .simple-search-form input {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .write-link span {
     display: none;
   }
 
   .navbar-right {
     gap: 8px;
+  }
+
+  .nav-tab {
+    padding: 6px 6px;
+  }
+
+  .nav-tab.active::after {
+    left: 6px;
+    right: 6px;
   }
 
   .profile-dropdown {

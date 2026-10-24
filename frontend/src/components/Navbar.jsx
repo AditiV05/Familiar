@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getInitial, getAvatarColor } from "../utils/avatarColor";
 import { useState, useEffect, useRef } from "react";
 import { isLoggedIn, logout } from "../utils/auth";
@@ -176,6 +176,9 @@ const Navbar = () => {
       <div className="navbar-right">
         {isLoggedIn() ? (
           <>
+            <NavLink to="/about" className="navbar-link nav-tab">
+              About
+            </NavLink>
             <Link to="/write" className="write-link">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path
@@ -292,9 +295,6 @@ const Navbar = () => {
                 <Link to="/settings" className="dropdown-item">
                   Settings
                 </Link>
-                <Link to="/about" className="dropdown-item">
-                  About
-                </Link>
                 <button onClick={handleLogout} className="dropdown-item logout">
                   Sign out
                 </button>
@@ -303,9 +303,9 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link to="/about" className="navbar-link">
+            <NavLink to="/about" className="navbar-link nav-tab">
               About
-            </Link>
+            </NavLink>
             <Link to="/login" className="navbar-link">
               Sign In
             </Link>
